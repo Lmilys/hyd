@@ -4,452 +4,363 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
 <meta name="format-detection" content="telephone=no">
-<title>货运单详情</title>
+<title>货运单</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
   html, body { margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: #e6e2d8;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(255,255,255,.5), transparent 45%),
-      radial-gradient(circle at 80% 70%, rgba(0,0,0,.05), transparent 45%);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, sans-serif;
     min-height: 100vh;
-    padding: 16px 12px 30px;
-    color: #2a2a2a;
+    padding: 16px 10px 32px;
+    color: #1a1a1a;
     -webkit-font-smoothing: antialiased;
-  }
-
-  .paper {
-    max-width: 580px;
-    margin: 0 auto;
-    background: #fffdf7;
-    border-radius: 3px;
-    box-shadow:
-      0 1px 2px rgba(0,0,0,.08),
-      0 8px 24px rgba(0,0,0,.12),
-      0 20px 48px rgba(0,0,0,.08);
+    background-color: #eef1f6;
+    background-image:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(70, 130, 210, .14), transparent 60%),
+      linear-gradient(180deg, #f4f6fa 0%, #e8edf4 100%);
+    background-attachment: fixed;
     position: relative;
-    overflow: hidden;
   }
 
-  .paper::before {
+  body::before {
     content: "";
-    display: block;
-    height: 5px;
-    background: linear-gradient(90deg, #c8102e 0%, #e63946 50%, #c8102e 100%);
-  }
-
-  .paper::after {
-    content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.013) 0px, rgba(0,0,0,.013) 1px, transparent 1px, transparent 3px);
-    opacity: .6;
     z-index: 0;
+    background-image:
+      linear-gradient(rgba(40, 80, 140, .055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(40, 80, 140, .055) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+            mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
   }
 
-  .paper-inner {
-    padding: 26px 22px 22px;
+  /* ========== 卡片 ========== */
+  .doc {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 22px 16px;
     position: relative;
     z-index: 1;
+    border: 1px solid rgba(210, 220, 235, .9);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, .8) inset,
+      0 2px 6px rgba(30, 60, 110, .05),
+      0 12px 30px rgba(30, 60, 110, .10);
   }
 
-  .corner {
+  .doc::before {
+    content: "";
     position: absolute;
-    top: 5px;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-top: 22px solid #c8102e;
-    border-left: 22px solid transparent;
-    z-index: 2;
+    top: 0;
+    left: 26px;
+    right: 26px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4677c9 30%, #b81c22 70%, transparent);
+    border-radius: 2px;
+    opacity: .8;
   }
 
   /* ========== 抬头 ========== */
   .head {
     text-align: center;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #c8102e;
-    margin-bottom: 22px;
-  }
-
-  .title {
-    font-family: "SimSun", "Songti SC", "STSong", serif;
-    font-size: 30px;
-    font-weight: 900;
-    letter-spacing: 12px;
-    color: #c8102e;
-    margin: 0 0 6px;
-    text-indent: 12px;
-    line-height: 1.15;
-  }
-
-  .subtitle {
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: #b8b0a0;
-    font-weight: 500;
-    text-transform: uppercase;
     margin-bottom: 12px;
   }
 
-  .order-no-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #666;
-    gap: 8px;
-  }
-
-  .no-left { display: flex; align-items: center; gap: 4px; min-width: 0; }
-  .no-tag { color: #999; font-size: 11px; letter-spacing: 1px; flex-shrink: 0; }
-  .no-val {
-    font-family: "SF Mono", "Menlo", Consolas, monospace;
-    color: #2a2a2a;
-    font-size: 12px;
+  .head h1 {
+    font-size: 16px;
     font-weight: 600;
-    letter-spacing: .5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #1a1a1a;
+    margin: 0 0 3px;
+    letter-spacing: 4px;
   }
 
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    background: rgba(16, 185, 129, .08);
-    color: #059669;
-    font-size: 11px;
-    border-radius: 10px;
-    font-weight: 500;
-    letter-spacing: .5px;
-    flex-shrink: 0;
-  }
-  .status-badge::before {
-    content: "";
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, .2);
-  }
-
-  /* ========== 路线 ========== */
-  .route-block {
-    display: flex;
-    align-items: stretch;
-    margin-bottom: 18px;
-    background: #faf7f0;
-    border-radius: 6px;
-    padding: 16px 14px;
-    border: 1px solid #ede5d5;
-  }
-
-  .station { flex: 1; min-width: 0; text-align: center; }
-
-  .station-label {
+  .head .sub {
     font-size: 10px;
-    color: #a89c82;
+    color: #b0b8c4;
     letter-spacing: 2px;
+  }
+
+  /* ========== 单号 ========== */
+  .no {
+    text-align: center;
+    padding: 10px 0 14px;
+    border-bottom: 1px solid #f0f3f8;
+    margin-bottom: 12px;
+  }
+
+  .no .k {
+    font-size: 10px;
+    color: #b0b8c4;
+    letter-spacing: 3px;
     margin-bottom: 6px;
   }
 
-  .station-name {
-    font-family: "SimSun", "Songti SC", "STSong", serif;
-    font-size: 19px;
-    font-weight: 700;
-    color: #2a2a2a;
-    letter-spacing: 2px;
+  .no .v {
+    font-family: "SF Mono", "Menlo", Consolas, monospace;
+    font-size: 21px;
+    font-weight: 600;
+    color: #1c3a5e;
+    letter-spacing: 1.5px;
+    line-height: 1.25;
     word-break: break-all;
-    line-height: 1.3;
   }
-  .station-name.empty { color: #ccc; font-weight: 400; }
+  .no .v.empty { color: #d0d6de; font-weight: 400; letter-spacing: 4px; }
 
-  .route-arrow {
-    display: flex;
-    align-items: center;
-    padding: 0 6px;
-    flex-shrink: 0;
-  }
-  .route-arrow svg { display: block; }
-
-  /* 日期行 */
-  .date-row {
+  /* ========== 路线 ========== */
+  .route {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 6px 18px;
-    font-size: 13px;
-    border-bottom: 1px dashed #e0d5bd;
-    margin-bottom: 18px;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f3f8;
+    margin-bottom: 12px;
   }
-  .date-row .label {
-    color: #a89c82;
+
+  .route .st { flex: 1; min-width: 0; }
+  .route .st.right { text-align: right; }
+
+  .route .st .nm {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+  .route .st .nm.empty { color: #d0d6de; font-weight: 400; }
+
+  .route .st .lbl {
+    font-size: 10px;
+    color: #b0b8c4;
+    margin-top: 3px;
     letter-spacing: 2px;
-    font-size: 11px;
-  }
-  .date-row .value {
-    font-family: "SF Mono", "Menlo", Consolas, monospace;
-    color: #2a2a2a;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: .5px;
   }
 
-  /* ========== 信息区块 ========== */
-  .section { margin-bottom: 18px; }
-
-  .section-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-    padding-left: 2px;
-  }
-  .icon-box {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #c8102e, #e63946);
-    color: #fff;
-    font-size: 11px;
-    display: flex; align-items: center; justify-content: center;
+  .route .arrow {
     flex-shrink: 0;
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(200,16,46,.25);
-  }
-  .section-title-text {
-    font-size: 13px;
-    font-weight: 600;
-    color: #2a2a2a;
-    letter-spacing: 3px;
-  }
-  .section-head .line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, #ede5d5, transparent);
+    color: #4677c9;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0 4px;
+    align-self: flex-start;
+    margin-top: 4px;
   }
 
-  .info-list {
-    background: #fcfaf4;
-    border-radius: 6px;
-    border: 1px solid #ede5d5;
-    overflow: hidden;
-  }
-
-  .info-item {
+  /* ========== 日期 ========== */
+  .date {
     display: flex;
-    padding: 11px 14px;
-    border-bottom: 1px solid #f0ead9;
-    font-size: 14px;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f3f8;
+    margin-bottom: 12px;
+  }
+  .date .k {
+    font-size: 11px;
+    color: #b0b8c4;
+    letter-spacing: 2px;
+  }
+  .date .v {
+    font-size: 13px;
+    color: #1c3a5e;
+    font-weight: 500;
+    font-family: "SF Mono", "Menlo", Consolas, monospace;
+    letter-spacing: .3px;
+  }
+  .date .v.empty { color: #d0d6de; font-weight: 400; }
+
+  /* ========== 发货人 / 收货人（纵向排列） ========== */
+  .party {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f3f8;
+    margin-bottom: 8px;
+  }
+  .party:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .party-title {
+    font-size: 11px;
+    color: #4677c9;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    position: relative;
+  }
+  .party-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 10px;
+    background: #4677c9;
+    border-radius: 1.5px;
+  }
+
+  .field {
+    display: flex;
+    padding: 4px 0;
+    align-items: flex-start;
     line-height: 1.5;
   }
-  .info-item:last-child { border-bottom: none; }
 
-  .info-item .lb {
-    width: 76px;
+  .field .k {
+    width: 68px;
     flex-shrink: 0;
-    color: #a89c82;
     font-size: 12px;
-    letter-spacing: 1px;
+    color: #99a2b0;
     padding-top: 1px;
   }
-  .info-item .vl {
+
+  .field .v {
     flex: 1;
-    color: #2a2a2a;
+    font-size: 13px;
+    color: #1a1a1a;
     word-break: break-all;
     min-width: 0;
-    font-size: 14px;
+    font-weight: 500;
   }
-  .info-item .vl.empty { color: #c8c0ae; }
+  .field .v.empty { color: #d0d6de; font-weight: 400; }
 
-  /* ========== 印章区 ========== */
-  .stamp-area {
+  /* ========== 底部（印章放大） ========== */
+  .foot {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 8px 4px 4px;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #f0f3f8;
     margin-top: 6px;
-    margin-bottom: 8px;
-    gap: 12px;
+    gap: 14px;
+    min-height: 86px;      /* 给放大后的印章预留高度 */
   }
-  .stamp-note {
-    font-size: 10px;
-    color: #b8b0a0;
-    letter-spacing: 1px;
-    text-align: right;
-    line-height: 1.5;
+
+  .foot .note {
+    font-size: 11px;
+    color: #b0b8c4;
+    line-height: 1.7;
+    letter-spacing: .3px;
+    max-width: 60%;
+    padding-bottom: 6px;
   }
+
   .stamp {
-    width: 88px;
-    height: 88px;
+    width: 78px;          /* 从 58px 放大到 78px */
+    height: 78px;
     flex-shrink: 0;
     transform: rotate(-8deg);
-    opacity: .88;
+    opacity: .85;
   }
-
-  /* ========== 底部 ========== */
-  .foot {
-    text-align: center;
-    padding-top: 14px;
-    border-top: 1px dashed #e0d5bd;
-    font-size: 11px;
-    color: #b8b0a0;
-    letter-spacing: 2px;
-  }
-  .foot .verify {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    color: #a89c82;
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1.5;
-  }
-  .foot .verify svg { display: block; flex-shrink: 0; }
 
   /* ========== 响应式 ========== */
   @media (max-width: 400px) {
-    body { padding: 10px 8px 24px; }
-    .paper-inner { padding: 20px 16px 18px; }
-    .title { font-size: 26px; letter-spacing: 10px; text-indent: 10px; }
-    .station-name { font-size: 16px; }
-    .route-block { padding: 14px 10px; }
-    .stamp { width: 76px; height: 76px; }
-    .info-item { padding: 10px 12px; }
-    .info-item .lb { width: 68px; }
+    body { padding: 10px 6px 24px; }
+    .doc { padding: 18px 16px 14px; border-radius: 12px; }
+    .doc::before { left: 18px; right: 18px; }
+    .no .v { font-size: 17px; letter-spacing: 1px; }
+    .route .st .nm { font-size: 16px; }
+    .field .k { width: 60px; font-size: 11px; }
+    .field .v { font-size: 12.5px; }
+    .foot { min-height: 76px; }
+    .stamp { width: 68px; height: 68px; }
   }
 </style>
 </head>
 <body>
 
-<div class="paper">
-  <div class="corner"></div>
-  <div class="paper-inner">
+<div class="doc">
 
-    <!-- 抬头 -->
-    <div class="head">
-      <h1 class="title">货运单</h1>
-      <div class="subtitle">Freight Waybill</div>
-      <div class="order-no-line">
-        <div class="no-left">
-          <span class="no-tag">No.</span>
-          <span class="no-val" id="noText">—</span>
-        </div>
-        <span class="status-badge">已核验</span>
-      </div>
-    </div>
-
-    <!-- 路线 -->
-    <div class="route-block">
-      <div class="station">
-        <div class="station-label">始发站</div>
-        <div class="station-name" id="fromText">—</div>
-      </div>
-      <div class="route-arrow">
-        <svg width="44" height="20" viewBox="0 0 44 20">
-          <defs>
-            <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#f5c0c7"/>
-              <stop offset="100%" stop-color="#c8102e"/>
-            </linearGradient>
-          </defs>
-          <line x1="2" y1="10" x2="34" y2="10" stroke="url(#arrowGrad)" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
-          <path d="M33 5 L41 10 L33 15 Z" fill="#c8102e"/>
-        </svg>
-      </div>
-      <div class="station">
-        <div class="station-label">目的地</div>
-        <div class="station-name" id="toText">—</div>
-      </div>
-    </div>
-
-    <!-- 日期 -->
-    <div class="date-row">
-      <span class="label">日 期</span>
-      <span class="value" id="dateText">—</span>
-    </div>
-
-    <!-- 发货人 -->
-    <div class="section">
-      <div class="section-head">
-        <div class="icon-box">发</div>
-        <div class="section-title-text">发货人</div>
-        <div class="line"></div>
-      </div>
-      <div class="info-list">
-        <div class="info-item">
-          <div class="lb">姓名</div>
-          <div class="vl" id="senderText">—</div>
-        </div>
-        <div class="info-item">
-          <div class="lb">公司</div>
-          <div class="vl" id="senderCompanyText">—</div>
-        </div>
-        <div class="info-item">
-          <div class="lb">地址</div>
-          <div class="vl" id="senderAddressText">—</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 收货人 -->
-    <div class="section">
-      <div class="section-head">
-        <div class="icon-box">收</div>
-        <div class="section-title-text">收货人</div>
-        <div class="line"></div>
-      </div>
-      <div class="info-list">
-        <div class="info-item">
-          <div class="lb">姓名</div>
-          <div class="vl" id="receiverText">—</div>
-        </div>
-        <div class="info-item">
-          <div class="lb">公司</div>
-          <div class="vl" id="receiverCompanyText">—</div>
-        </div>
-        <div class="info-item">
-          <div class="lb">地址</div>
-          <div class="vl" id="receiverAddressText">—</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 印章 -->
-    <div class="stamp-area">
-      <div class="stamp-note">
-        电子单据<br>无需盖章
-      </div>
-      <svg class="stamp" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="92" fill="none" stroke="#c8102e" stroke-width="4"/>
-        <circle cx="100" cy="100" r="86" fill="none" stroke="#c8102e" stroke-width="1.2"/>
-        <path id="stampArc" d="M 45,128 A 62,62 0 1,1 155,128" fill="none"/>
-        <text font-family="SimSun, Songti SC, serif" font-weight="700" font-size="22" fill="#c8102e" letter-spacing="0">
-          <textPath href="#stampArc" startOffset="50%" text-anchor="middle">货物运输专用章</textPath>
-        </text>
-        <polygon points="100,72 108,93 130,93 112,106 119,128 100,115 81,128 88,106 70,93 92,93" fill="#c8102e"/>
-        <text x="100" y="158" text-anchor="middle" fill="#c8102e" font-family="SimSun, Songti SC, serif" font-weight="700" font-size="16" letter-spacing="3">业务章</text>
-      </svg>
-    </div>
-
-    <!-- 底部 -->
-    <div class="foot">
-      <div class="verify">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2 L4 6 v6 c0 5 3.4 9.4 8 10 c4.6 -0.6 8 -5 8 -10 V6 z" fill="#c8102e" opacity="0.15"/>
-          <path d="M9 12 l2 2 l4 -4" stroke="#c8102e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        信息以纸质单据为准 · 如有疑问请联系承运方
-      </div>
-    </div>
-
+  <!-- 抬头 -->
+  <div class="head">
+    <h1>货运单</h1>
+    <div class="sub">FREIGHT WAYBILL</div>
   </div>
+
+  <!-- 单号 -->
+  <div class="no">
+    <div class="k">运 单 编 号</div>
+    <div class="v" id="noText">—</div>
+  </div>
+
+  <!-- 路线 -->
+  <div class="route">
+    <div class="st">
+      <div class="nm" id="fromText">—</div>
+      <div class="lbl">始发站</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="st right">
+      <div class="nm" id="toText">—</div>
+      <div class="lbl">目的地</div>
+    </div>
+  </div>
+
+  <!-- 日期 -->
+  <div class="date">
+    <span class="k">运输日期</span>
+    <span class="v" id="dateText">—</span>
+  </div>
+
+  <!-- 发货人 -->
+  <div class="party">
+    <div class="party-title">发货人</div>
+    <div class="field">
+      <div class="k">姓名</div>
+      <div class="v" id="senderText">—</div>
+    </div>
+    <div class="field">
+      <div class="k">公司名称</div>
+      <div class="v" id="senderCompanyText">—</div>
+    </div>
+    <div class="field">
+      <div class="k">发货地址</div>
+      <div class="v" id="senderAddressText">—</div>
+    </div>
+  </div>
+
+  <!-- 收货人 -->
+  <div class="party">
+    <div class="party-title">收货人</div>
+    <div class="field">
+      <div class="k">姓名</div>
+      <div class="v" id="receiverText">—</div>
+    </div>
+    <div class="field">
+      <div class="k">公司名称</div>
+      <div class="v" id="receiverCompanyText">—</div>
+    </div>
+    <div class="field">
+      <div class="k">收货地址</div>
+      <div class="v" id="receiverAddressText">—</div>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="foot">
+    <div class="note">
+      本单据以承运方纸质原件为准<br>
+      如有疑问请联系承运方
+    </div>
+    <svg class="stamp" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="92" fill="none" stroke="#b81c22" stroke-width="3"/>
+      <circle cx="100" cy="100" r="85" fill="none" stroke="#b81c22" stroke-width=".8"/>
+      <path id="arc" d="M 42,128 A 64,64 0 1,1 158,128" fill="none"/>
+      <text font-family="SimSun, Songti SC, serif" font-weight="700" font-size="19" fill="#b81c22">
+        <textPath href="#arc" startOffset="50%" text-anchor="middle">货物运输专用章</textPath>
+      </text>
+      <polygon points="100,76 106,93 124,93 109,104 115,122 100,111 85,122 91,104 76,93 94,93" fill="#b81c22"/>
+      <text x="100" y="152" text-anchor="middle" fill="#b81c22" font-family="SimSun, Songti SC, serif" font-weight="700" font-size="13" letter-spacing="2">业务章</text>
+    </svg>
+  </div>
+
 </div>
 
 <script>
@@ -482,7 +393,7 @@
   set('receiverCompanyText', p.get('rcc'));
   set('receiverAddressText', p.get('ra'));
 
-  document.title = p.get('no') ? ('货运单 ' + p.get('no')) : '货运单详情';
+  document.title = p.get('no') ? ('货运单 ' + p.get('no')) : '货运单';
 })();
 </script>
 </body>
