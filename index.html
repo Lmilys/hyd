@@ -72,11 +72,6 @@
     min-width: 0;
   }
   .row .value.empty { color: #ccc; }
-  .amount {
-    color: #e60000;
-    font-size: 22px;
-    font-weight: 700;
-  }
   .route {
     display: flex;
     align-items: center;
@@ -120,35 +115,45 @@
     </div>
   </div>
 
-  <div class="section-title">— 联系人 —</div>
+  <div class="section-title">— 发货人 —</div>
   <div class="section">
     <div class="row">
-      <div class="label">发货人</div>
+      <div class="label">姓名</div>
       <div class="value" id="senderText">—</div>
     </div>
     <div class="row">
-      <div class="label">收货人</div>
+      <div class="label">公司名称</div>
+      <div class="value" id="senderCompanyText">—</div>
+    </div>
+    <div class="row">
+      <div class="label">发货地址</div>
+      <div class="value" id="senderAddressText">—</div>
+    </div>
+  </div>
+
+  <div class="section-title">— 收货人 —</div>
+  <div class="section">
+    <div class="row">
+      <div class="label">姓名</div>
       <div class="value" id="receiverText">—</div>
     </div>
     <div class="row">
-      <div class="label">驾驶员</div>
-      <div class="value" id="driverText">—</div>
+      <div class="label">公司名称</div>
+      <div class="value" id="receiverCompanyText">—</div>
     </div>
-  </div>
-
-  <div class="section-title">— 费用 —</div>
-  <div class="section">
     <div class="row">
-      <div class="label">总费用</div>
-      <div class="value"><span class="amount" id="amountText">—</span></div>
+      <div class="label">收货地址</div>
+      <div class="value" id="receiverAddressText">—</div>
     </div>
   </div>
 
+  <div class="footer">本页由二维码自动生成</div>
 </div>
 
 <script>
 (function() {
   var p = new URLSearchParams(location.search);
+
   function set(id, val) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -161,16 +166,21 @@
       el.classList.add('empty');
     }
   }
+
   set('noText', p.get('no'));
   set('fromText', p.get('fr'));
   set('toText', p.get('to'));
   set('dateText', p.get('dt'));
-  set('senderText', p.get('sd'));
-  set('receiverText', p.get('rc'));
-  set('driverText', p.get('dv'));
 
-  var amt = p.get('amt');
-  document.getElementById('amountText').textContent = amt ? ('￥' + amt) : '—';
+  // 发货人 & 公司 & 地址
+  set('senderText', p.get('sd'));
+  set('senderCompanyText', p.get('sc'));
+  set('senderAddressText', p.get('sa'));
+
+  // 收货人 & 公司 & 地址
+  set('receiverText', p.get('rc'));
+  set('receiverCompanyText', p.get('rcc'));
+  set('receiverAddressText', p.get('ra'));
 
   document.title = p.get('no') ? ('货运单 ' + p.get('no')) : '货运单详情';
 })();
