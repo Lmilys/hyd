@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
+<meta name="format-detection" content="telephone=no">
+<title>货运单详情</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 12px;
+    color: #222;
+    min-height: 100vh;
+  }
+  .card {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  }
+  .card-header {
+    background: linear-gradient(135deg, #c00, #e60000);
+    color: #fff;
+    padding: 22px 18px;
+    text-align: center;
+  }
+  .card-header h1 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    letter-spacing: 6px;
+    font-weight: 600;
+  }
+  .card-header .no {
+    font-size: 14px;
+    opacity: .92;
+    font-family: monospace;
+    letter-spacing: 1px;
+    word-break: break-all;
+  }
+  .section { padding: 4px 0; }
+  .section-title {
+    padding: 14px 18px 4px;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 2px;
+  }
+  .row {
+    display: flex;
+    padding: 13px 18px;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 15px;
+    align-items: flex-start;
+  }
+  .row:last-child { border-bottom: none; }
+  .row .label {
+    width: 84px;
+    color: #888;
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .row .value {
+    flex: 1;
+    color: #222;
+    word-break: break-all;
+    line-height: 1.55;
+    min-width: 0;
+  }
+  .row .value.empty { color: #ccc; }
+  .amount {
+    color: #e60000;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+    flex-wrap: wrap;
+  }
+  .route .arrow { color: #e60000; font-size: 16px; }
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <h1>货运单</h1>
+    <div class="no" id="noText">—</div>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <div class="label">路线</div>
+      <div class="value">
+        <div class="route">
+          <span id="fromText">—</span>
+          <span class="arrow">→</span>
+          <span id="toText">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">日期</div>
+      <div class="value" id="dateText">—</div>
+    </div>
+  </div>
+
+  <div class="section-title">— 联系人 —</div>
+  <div class="section">
+    <div class="row">
+      <div class="label">发货人</div>
+      <div class="value" id="senderText">—</div>
+    </div>
+    <div class="row">
+      <div class="label">收货人</div>
+      <div class="value" id="receiverText">—</div>
+    </div>
+    <div class="row">
+      <div class="label">驾驶员</div>
+      <div class="value" id="driverText">—</div>
+    </div>
+  </div>
+
+  <div class="section-title">— 费用 —</div>
+  <div class="section">
+    <div class="row">
+      <div class="label">总费用</div>
+      <div class="value"><span class="amount" id="amountText">—</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  var p = new URLSearchParams(location.search);
+  function set(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var v = (val || '').trim();
+    if (v) {
+      el.textContent = v;
+      el.classList.remove('empty');
+    } else {
+      el.textContent = '—';
+      el.classList.add('empty');
+    }
+  }
+  set('noText', p.get('no'));
+  set('fromText', p.get('fr'));
+  set('toText', p.get('to'));
+  set('dateText', p.get('dt'));
+  set('senderText', p.get('sd'));
+  set('receiverText', p.get('rc'));
+  set('driverText', p.get('dv'));
+
+  var amt = p.get('amt');
+  document.getElementById('amountText').textContent = amt ? ('￥' + amt) : '—';
+
+  document.title = p.get('no') ? ('货运单 ' + p.get('no')) : '货运单详情';
+})();
+</script>
+</body>
+</html>
